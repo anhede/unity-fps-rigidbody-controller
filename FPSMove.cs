@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class FPSMove : MonoBehaviour
 {
-    public float acceleration = 50f;
+    public float acceleration = 10f;
+    public float maxSpeed = 5f;
     public float friction = 0.9f;
-    public float walkMaxSpeed = 2f;
-    public float sprintMaxSpeed = 4f;
+    public float jumpSpeed = 5f;
+    public LayerMask groundLayer = -1; // Default to all
     private Rigidbody rb;
-    private float maxSpeed
-    {
-        get { return Input.GetButton("Sprint") ? sprintMaxSpeed : walkMaxSpeed; }
-    }
+    private bool isGrounded;
 
-    void Awake()
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
@@ -37,6 +35,18 @@ public class FPSMove : MonoBehaviour
             velocity.z *= friction;
             rb.velocity = velocity;
         }
+
+        // Jump
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpSpeed, ForceMode.VelocityChange);
+        }
+
+        // Double gravity when not jumping
+        if (!isGrounded && !Input.GetButton("Jump"))
+        {
+            rb.AddForce(Physics.gravity * Time.deltaTime, ForceMode.VelocityChange);
+        }
     }
 
     void FixedUpdate()
@@ -50,5 +60,8 @@ public class FPSMove : MonoBehaviour
             horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
             rb.velocity = new Vector3(horizontalVelocity.x, velocity.y, horizontalVelocity.z);
         }
+
+        // Check if grounded
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, groundLayer);
     }
 }
