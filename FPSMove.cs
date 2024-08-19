@@ -8,11 +8,17 @@ public class FPSMove : MonoBehaviour
     public float friction = 0.9f;
     public float walkMaxSpeed = 2f;
     public float sprintMaxSpeed = 4f;
-    public Rigidbody rb;
+    private Rigidbody rb;
+    private float maxSpeed
+    {
+        get { return Input.GetButton("Sprint") ? sprintMaxSpeed : walkMaxSpeed; }
+    }
 
-    private float maxSpeed { get { return Input.GetButton("Sprint") ? sprintMaxSpeed : walkMaxSpeed; } }
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
-    // Update is called once per frame
     void Update()
     {
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
@@ -26,16 +32,23 @@ public class FPSMove : MonoBehaviour
         // friction
         if (movement.sqrMagnitude < 0.01f)
         {
-            rb.velocity *= friction;
+            Vector3 velocity = rb.velocity;
+            velocity.x *= friction;
+            velocity.z *= friction;
+            rb.velocity = velocity;
         }
     }
 
     void FixedUpdate()
     {
-        // Clamp the velocity to the max speed
-        if (rb.velocity.magnitude > maxSpeed)
+        // Clamp the velocity to the max speed, ignoring the y-component
+        Vector3 velocity = rb.velocity;
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0, velocity.z);
+
+        if (horizontalVelocity.magnitude > maxSpeed)
         {
-            rb.velocity = rb.velocity.normalized * maxSpeed;
+            horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
+            rb.velocity = new Vector3(horizontalVelocity.x, velocity.y, horizontalVelocity.z);
         }
     }
 }
