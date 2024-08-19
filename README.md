@@ -1,6 +1,8 @@
 # Unity FPS Rigidbody Controller 
 This is the controller to use if you want to create a **First Person** **rigidbody** controller in Unity. It is **responsive**, **smooth** and **simple** in design.
 
+![Gif of controller](images/animated_example.gif)
+
 ## Why is this controller better than others?
 A great player controller must be two things:
 1. Responsive
@@ -14,6 +16,8 @@ Most controllers using rigidbodies in Unity fail at either of these things and t
 1. Download the repository
 2. Copy the assets over to your project
 3. Add the `Player` prefab to your scene
+
+That's it! You now have a responsive and smooth player controller in your scene.
 
 ## Documentation
 ### Player composition
