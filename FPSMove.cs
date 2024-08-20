@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class FPSMove : MonoBehaviour
 {
+    [Header("Movement")]
     public float acceleration = 10f;
     public float maxSpeed = 5f;
     public float friction = 0.9f;
     public float jumpSpeed = 5f;
+
+    [Header("Grounding")]
     public LayerMask groundLayer = -1; // Default to all
+    public Vector3 groundCheckStart;
+    public Vector3 groundCheckEnd;
+    public float groundCheckRadius = 0.1f;
     private Rigidbody rb;
     private bool isGrounded;
 
@@ -62,6 +68,28 @@ public class FPSMove : MonoBehaviour
         }
 
         // Check if grounded
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, groundLayer);
+        isGrounded = Physics.SphereCast(
+            transform.TransformPoint(groundCheckStart),
+            groundCheckRadius,
+            transform.TransformDirection(groundCheckEnd),
+            out RaycastHit hit,
+            groundCheckEnd.magnitude,
+            groundLayer
+        );
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(
+            transform.TransformPoint(groundCheckStart),
+            groundCheckRadius
+        );
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(
+            transform.TransformPoint(groundCheckStart) + transform.TransformDirection(groundCheckEnd),
+            groundCheckRadius
+        );
     }
 }
