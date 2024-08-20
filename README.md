@@ -38,13 +38,16 @@ The `FPSLook` script is responsible for rotating the camera. It is attached to t
 ![FPSLook script](images/img_fpslook.png)
 
 ## Why do most controllers fail?
+As previously mentioned, a great player controller must be two things:
+1. Responsive
+2. Smooth
 
 For non-rigidbody controllers, these both come easily. Use `LateUpdate()` to do camera movement and `Update()` to do player movment. But for rigidbody controllers, it is not that simple. 
 
 Rigidbodies are updated in `FixedUpdate()` which by default is called 50 times per second. If we naively use `FixedUpdate()` for player movement, the player will feel **choppy**, breaking the second rule. To fix this we change the `Interpolation` setting of the rigidbody to `Interpolate`. This makes the rigidbody move smoothly.
 
-For interpolation to work, we must make sure to only rotate the player in `FixedUpdate()`. However a camera only updating in `FixedUpdate()` will feel **unresponsive**.
+For interpolation to work, we must make sure to only move and rotate the player in `FixedUpdate()`. However a camera only updating in `FixedUpdate()` will feel **unresponsive**.
 
-The final solution to this is what this controller does. It moves the player in `FixedUpdate()` and the camera rotates separately from the player in `LateUpdate()`. On `FixedUpdate()` in the player look script, we sync the camera rotation with the player rotation. This makes the player rigidbody movement smoothly interpolated, and allows for responsive camera movement.
+The controller solves this problem in a unique way. It moves the player in `FixedUpdate()` and the camera rotates separately from the player in `LateUpdate()`. On `FixedUpdate()` in the player look script, we sync the camera rotation with the player rotation. This makes the player rigidbody movement smoothly interpolated, and allows for responsive camera movement.
 
 Voila! We have a smooth and responsive player controller.
