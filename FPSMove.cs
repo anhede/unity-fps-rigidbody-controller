@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FPSMove : MonoBehaviour
 {
+    public bool IsGrounded { get { return isGrounded; } }
+
     [Header("Movement")]
     public float acceleration = 10f;
     public float maxSpeed = 5f;
